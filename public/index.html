@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Backup your Instagram photos and videos instantly. Free of charge for
+        small accounts.</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+          crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
+          crossorigin="anonymous">
+</head>
+<body>
+<form class="form-inline" id="formUsername">
+    <div class="form-group">
+        <label class="sr-only" for="usernameInput">Amount (in dollars)</label>
+        <div class="input-group">
+            <div class="input-group-addon">@</div>
+            <input type="text" class="form-control" id="usernameInput"
+                   placeholder="username">
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary" id="instabackup_step1">Next
+    </button>
+</form>
+
+
+<div id="userCard">
+    <div id="usernameCard"></div>
+    <div id="mediaCountCard"></div>
+    <button type="button" class="btn btn-primary" id="instabackup_step2">Prepare
+        Medias
+    </button>
+</div>
+
+<div id="zipCard">
+    <div id="zipUrl"></div>
+</div>
+<!-- Latest compiled and minified JavaScript -->
+<script src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+<script type="application/javascript">
+    var username;
+    $("#instabackup_step1").click(function () {
+        username = $('#usernameInput').val();
+        console.log('username: ', username);
+
+        $.get("/api/checkUsername/" + username, function (data) {
+//            $(".result").html(data);
+//            alert("Load was performed.");
+            console.log(data);
+            if (data.error === 0) {
+                $('#formUsername').hide();
+                $('#usernameCard').text(data.data.username);
+                $('#mediaCountCard').text(data.data.media.count);
+
+            }
+        });
+    });
+
+    $('#instabackup_step2').click(function () {
+        $.get("/api/downloadMedias/" + username, function (data) {
+            console.log(data);
+            $('#zipUrl').text(data.data.zipUrl);
+        });
+    });
+
+
+</script>
+</body>
+</html>
+

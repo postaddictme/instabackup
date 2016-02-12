@@ -1,0 +1,4 @@
+node_modules
+.idea
+account-medias/archive/*
+account-medias/raw/*
