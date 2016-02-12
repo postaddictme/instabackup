@@ -123,7 +123,7 @@ function downloadMedia(username, res) {
         if (!post || post == null || typeof post == null || typeof  post == "undefined") {
             return;
         }
-        time = new Date(post.time * 1000);
+        //time = new Date(post.time * 1000);
         //console.log([
         //    "slang800's post from ",
         //    time.toLocaleDateString(),
@@ -136,13 +136,13 @@ function downloadMedia(username, res) {
         console.log(post);
         //if (!fs.)
 // bigphoto: JSON.stringify(rawPost.images.low_resolution.url).replace('320x320', '1080x1080')
-        var photoUrl = post.bigphoto.replace('"', '').replace('"', '').split('?')[0];
+//        var photoUrl = post.bigphoto.replace('"', '').replace('"', '').split('?')[0];
         if (post.video) {
             download(post.video, pathToFolder + '/' + post.time + '.mp4', function () {
                 //console.log('done');
             });
         } else {
-            download(photoUrl, pathToFolder + '/' + post.time + '.jpg', function () {
+            download(post.image, pathToFolder + '/' + post.time + '.jpg', function () {
                 //console.log('done');
             });
         }
