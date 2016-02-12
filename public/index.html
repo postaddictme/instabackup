@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="backapitforme">
 <head>
     <meta charset="UTF-8">
     <title>Backup your Instagram photos and videos instantly. Free of charge for
@@ -48,7 +48,11 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
 <script type="application/javascript">
+
+    $('#userCard').hide();
+
     var username;
     $("#instabackup_step1").click(function () {
         username = $('#usernameInput').val();
@@ -62,6 +66,7 @@
                 $('#formUsername').hide();
                 $('#usernameCard').text(data.data.username);
                 $('#mediaCountCard').text(data.data.media.count);
+                $('#userCard').show();
 
             }
         });
