@@ -97,15 +97,19 @@ module.exports.downloadMedias = function (req, res) {
     }
     // Download here
 
-    fs.access('account-medias/raw/' + username, fs.R_OK, function (err) {
-        if (err) {
-            logger.error(err);
-            fs.mkdir('account-medias/raw/' + username, downloadMedia(username, res));
-            return;
-        }
-        downloadMedia(username, res);
-    });
+    //fs.access('account-medias/raw/' + username, fs.R_OK, function (err) {
+    //    if (err) {
+    //        logger.error(err);
+    //        fs.mkdir('account-medias/raw/' + username, downloadMedia(username, res));
+    //        return;
+    //    }
+    //    downloadMedia(username, res);
+    //});
 
+    setTimeout(function () {
+        res.json({error: 1, message: 'media', data: {zipUrl: 'https://google.com/logo.png'}});
+        alert("Hello");
+    }, 3000);
 
     // TODO: Send email to me
 };

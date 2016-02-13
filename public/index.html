@@ -15,6 +15,7 @@
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
           integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
           crossorigin="anonymous">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 <body>
 <form class="form-inline" id="formUsername">
@@ -26,7 +27,9 @@
                    placeholder="username">
         </div>
     </div>
-    <button type="button" class="btn btn-primary" id="instabackup_step1">Next
+    <button type="button" class="btn btn-primary" id="instabackup_step1">
+
+        Next
     </button>
 </form>
 
@@ -55,6 +58,9 @@
 
     var username;
     $("#instabackup_step1").click(function () {
+        $(this).prop('disabled', true);
+        $('#usernameInput').prop('disabled', true);
+        $("#instabackup_step1").html('<i class="fa fa-circle-o-notch fa-spin"></i>');
         username = $('#usernameInput').val();
         console.log('username: ', username);
 
