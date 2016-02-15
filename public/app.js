@@ -36,11 +36,14 @@ application
 
         $scope.loadCurrentInstagramAccount = function () {
             $scope.currentInstagramAccount = userService.getCurrentInstagramAccount();
+            if ($scope.currentInstagramAccount == 'undefined' || typeof $scope.currentInstagramAccount =='undefined' || $scope.currentInstagramAccount == null) {
+                $window.location.href = '#/check-username'
+            }
         };
 
         $scope.checkUsername = function (username) {
             $scope.isInputDisabled = true;
-            $http.get('api/checkUsername/' + username)
+            $http.post('api/checkUsername/' + username)
                 .then(function (response) {
                     $scope.isInputDisabled = false;
                     console.log(response.data);
@@ -69,7 +72,7 @@ application
 
         $scope.prepareMedias = function () {
             $scope.isMediaPreparing = true;
-            $http.get('api/prepareMedias/' + $scope.currentInstagramAccount.username)
+            $http.post('api/prepareMedias/' + $scope.currentInstagramAccount.username)
                 .then(function (resp) {
                     console.log(resp.data);
                     $scope.zipUrl = resp.data.data.zipUrl
@@ -85,7 +88,7 @@ application
 application
     .factory('userService', function () {
         var factory = {};
-        var currentInstagramAccount = {};
+        var currentInstagramAccount;
 
         factory.saveInstagramAccount = function (account) {
             currentInstagramAccount = account;

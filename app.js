@@ -60,8 +60,8 @@ function createFolders() {
     });
 }
 
-app.get('/api/checkUsername/:username', userController.checkUsername);
-app.get('/api/prepareMedias/:username', userController.prepareMedias);
+app.post('/api/checkUsername/:username', userController.checkUsername);
+app.post('/api/prepareMedias/:username', userController.prepareMedias);
 
 app.listen(process.env.PORT, function () {
     console.log('Example app listening on port ' + process.env.PORT);

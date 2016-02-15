@@ -9,9 +9,18 @@ var db = new loki('loki.json');
 
 var InstagramPosts = require('instagram-screen-scrape');
 var fs = require('fs');
-
+var emailjs = require('emailjs');
 var usernames = db.addCollection('usernames');
 
+var server = emailjs
+    .server
+    .connect({
+        user: 'r.kapishev',
+        password: '091XE08ss10YJO472R2A',
+        host: 'smtp.yandex.ru',
+        ssl: true,
+        port: 465
+    });
 
 var archiver = require('archiver');
 var AWS = require('aws-sdk');
@@ -78,7 +87,7 @@ module.exports.prepareMedias = function (req, res) {
     var username = req.params.username;
     var account = usernames.find({username: username});
     var accounts = usernames.find({username: username});
-    var currentTimestamp = Math.round((+new Date()) / 1000)
+    var currentTimestamp = Math.round((+new Date()) / 1000);
     if (accounts.length === 0) {
         res.json({
             error: 1,
@@ -96,24 +105,16 @@ module.exports.prepareMedias = function (req, res) {
         });
         return;
     }
-    // Download here
-
     fs.access(constants.FOLDER_ACCOUNT_RAW_MEDIAS + '/' + username, fs.R_OK | fs.W_OK, function (err) {
         if (err) {
-            logger.warn('Folder does not exist', err);
+            logger.warn('Folder does not exist', constants.FOLDER_ACCOUNT_RAW_MEDIAS + '/' + username);
             logger.debug('Creating folder.');
             fs.mkdir(constants.FOLDER_ACCOUNT_RAW_MEDIAS + '/' + username, downloadMedia(username, res));
             return;
         }
         downloadMedia(username, res);
     });
-
-    //setTimeout(function () {
-    //    res.json({error: 1, message: 'media', data: {zipUrl: 'https://google.com/logo.png'}});
-    //    alert("Hello");
-    //}, 3000);
-
-    // TODO: Send email to me
+    //sendInfo(username);
 };
 
 function downloadMedia(username, res) {
@@ -122,111 +123,83 @@ function downloadMedia(username, res) {
     });
     var pathToFolder = constants.FOLDER_ACCOUNT_RAW_MEDIAS + '/' + username;
     var pathToZip = 'account-medias/archive/' + username + '.zip';
+    var index = 0;
 
     streamOfPosts.on('readable', function () {
-        var post, time;
-        post = streamOfPosts.read();
-        if (!post || post == null || typeof post == null || typeof  post == "undefined") {
+        var post = streamOfPosts.read();
+        if (!post || post == null || typeof  post == "undefined") {
             return;
         }
-        //time = new Date(post.time * 1000);
-        //console.log([
-        //    "slang800's post from ",
-        //    time.toLocaleDateString(),
-        //    " got ",
-        //    post.like,
-        //    " like(s), and ",
-        //    post.comment,
-        //    " comment(s)"
-        //].join(''));
-        //console.log(post);
-        //if (!fs.)
-// bigphoto: JSON.stringify(rawPost.images.low_resolution.url).replace('320x320', '1080x1080')
-//        var photoUrl = post.bigphoto.replace('"', '').replace('"', '').split('?')[0];
+        // bigphoto: JSON.stringify(rawPost.images.low_resolution.url).replace('320x320', '1080x1080')
+        //        var photoUrl = post.bigphoto.replace('"', '').replace('"', '').split('?')[0];
         if (post.video) {
             download(post.video, pathToFolder + '/' + post.time + '.mp4', function () {
-                //console.log('done');
+                index++;
+                logger.debug('Video downloaded:', index);
+                var accounts = usernames.find({username: username});
+                if (index === accounts[0].account.media.count) {
+                    logger.debug('Starting zip');
+                    zipIt(username, pathToFolder, res, pathToZip);
+                }
             });
         } else {
             download(post.image, pathToFolder + '/' + post.time + '.jpg', function () {
-                //console.log('done');
+                index++;
+                logger.debug('Photo downloaded:', index);
+                var accounts = usernames.find({username: username});
+                if (index === accounts[0].account.media.count) {
+                    logger.debug('Starting zip');
+                    zipIt(username, pathToFolder, res, pathToZip);
+                }
             });
         }
     });
     streamOfPosts.on('end', function () {
-        logger.info('DOWNLOADED');
-        //res.json('DOWNLOADED');
-        var output = fs.createWriteStream(pathToZip);
-        var archive = archiver.create('zip', {});
-        output.on('close', function () {
-            console.log(archive.pointer() + ' total bytes');
-            console.log('archiver has been finalized and the output file descriptor has closed.');
-            var resMessage = 'hello';
-
-            res.json({
-                error: 0,
-                message: resMessage,
-                data: {zipUrl: 'archives/' + username + '.zip'}
-            });
-
-            //var stats = fs.statSync(pathToZip);
-            //var fileSizeInBytes = stats["size"];
-            //var fileSizeInMegabytes = fileSizeInBytes / 1000000.0;
-            //logger.info(pathToZip + "mB:", fileSizeInMegabytes);
-            //
-            //var fileStream = fs.createReadStream(pathToZip);
-            //fileStream.on('error', function (err) {
-            //    resMessage = 'Error creating file stream.';
-            //    logger.error(resMessage, err);
-            //    res.json({error: 1, message: resMessage, data: null});
-            //});
-            //fileStream.on('open', function () {
-            //    var s3bucket = new AWS.S3({params: {Bucket: 'instabackup2'}});
-            //    var params = {
-            //        Key: username + '.zip',
-            //        Body: fileStream,
-            //        ACL: 'public-read',
-            //        ContentType: 'application/octet-stream'
-            //    };
-            //    s3bucket.upload(params, function (err, data) {
-            //        if (err) {
-            //            resMessage = 'Error uploading data';
-            //            logger.error(resMessage, err);
-            //            res.json({error: 1, message: resMessage, data: null});
-            //            return;
-            //        }
-            //        resMessage = 'Successfully uploaded data to myBucket/myKey.';
-            //        logger.info(resMessage, data);
-            //        res.json({
-            //            error: 0,
-            //            message: resMessage,
-            //            data: {zipUrl: data.Location}
-            //        });
-            //    });
-            //});
-        });
-
-        archive.on('error', function (err) {
-            throw err;
-        });
-
-        archive.pipe(output);
-        //archive.bulk([
-        //    {expand: true, cwd: pathToFolder, src: ['**']/*, dest: 'source'*/}
-        //]);
-        archive.directory(pathToFolder, '', {name: pathToFolder});
-        archive.finalize();
-
-
+        logger.debug('All info about post loaded.');
     });
-};
+}
 
 
 var download = function (uri, filename, callback) {
     request.head(uri, function (err, res, body) {
-        //console.log('content-type:', res.headers['content-type']);
-        //console.log('content-length:', res.headers['content-length']);
-
+        if (err) {
+            logger.error('Error when downloading file', err);
+        }
         request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
     });
 };
+
+function sendInfo(username) {
+    server.send({
+        text: 'https://instagram.com/' + username,
+        from: 'Raiymbek Kapishev <r.kapishev@yandex.ru>',
+        to: 'Raiymbek Kapishev <r.kapishev@gmail.com>',
+        subject: '@' + username + ' has downloaded his media'
+    }, function (err, message) {
+        console.log(err || message);
+    });
+}
+
+function zipIt(username, pathToFolder, res, pathToZip) {
+    var output = fs.createWriteStream(pathToZip);
+    var archive = archiver.create('zip', {});
+    archive.directory(pathToFolder, '', {name: pathToFolder});
+
+    archive.pipe(output);
+
+    output.on('close', function () {
+        console.log(archive.pointer() / (1024 * 1024) + ' total megabytes');
+        console.log('archiver has been finalized and the output file descriptor has closed.');
+        var resMessage = 'hello';
+
+        res.json({
+            error: 0,
+            message: resMessage,
+            data: {zipUrl: 'archives/' + username + '.zip'}
+        });
+    });
+    archive.on('error', function (err) {
+        logger.error(err);
+    });
+    archive.finalize();
+}

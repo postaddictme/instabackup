@@ -13,6 +13,7 @@
   "dependencies": {
     "archiver": "0.21.0",
     "aws-sdk": "2.2.35",
+    "emailjs": "1.0.4",
     "express": "4.13.4",
     "foreman": "1.4.1",
     "instagram-screen-scrape": "1.0.1",
