@@ -114,7 +114,7 @@ module.exports.prepareMedias = function (req, res) {
         }
         downloadMedia(username, res);
     });
-    //sendInfo(username);
+    sendInfo(username);
 };
 
 function downloadMedia(username, res) {
