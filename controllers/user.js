@@ -4,6 +4,7 @@
 var request = require('request');
 var logger = require('log4js').getLogger('controllers/user.js');
 var loki = require('lokijs');
+var constants = require('../constants/constants');
 var db = new loki('loki.json');
 
 var InstagramPosts = require('instagram-screen-scrape');
@@ -65,7 +66,7 @@ module.exports.checkUsername = function (req, res) {
     });
 };
 
-module.exports.downloadMedias = function (req, res) {
+module.exports.prepareMedias = function (req, res) {
     if (!req.params.hasOwnProperty('username')) {
         res.json({
             error: 1,
@@ -97,19 +98,20 @@ module.exports.downloadMedias = function (req, res) {
     }
     // Download here
 
-    //fs.access('account-medias/raw/' + username, fs.R_OK, function (err) {
-    //    if (err) {
-    //        logger.error(err);
-    //        fs.mkdir('account-medias/raw/' + username, downloadMedia(username, res));
-    //        return;
-    //    }
-    //    downloadMedia(username, res);
-    //});
+    fs.access(constants.FOLDER_ACCOUNT_RAW_MEDIAS + '/' + username, fs.R_OK | fs.W_OK, function (err) {
+        if (err) {
+            logger.warn('Folder does not exist', err);
+            logger.debug('Creating folder.');
+            fs.mkdir(constants.FOLDER_ACCOUNT_RAW_MEDIAS + '/' + username, downloadMedia(username, res));
+            return;
+        }
+        downloadMedia(username, res);
+    });
 
-    setTimeout(function () {
-        res.json({error: 1, message: 'media', data: {zipUrl: 'https://google.com/logo.png'}});
-        alert("Hello");
-    }, 3000);
+    //setTimeout(function () {
+    //    res.json({error: 1, message: 'media', data: {zipUrl: 'https://google.com/logo.png'}});
+    //    alert("Hello");
+    //}, 3000);
 
     // TODO: Send email to me
 };
@@ -118,7 +120,7 @@ function downloadMedia(username, res) {
     var streamOfPosts = new InstagramPosts({
         username: username
     });
-    var pathToFolder = 'account-medias/raw/' + username;
+    var pathToFolder = constants.FOLDER_ACCOUNT_RAW_MEDIAS + '/' + username;
     var pathToZip = 'account-medias/archive/' + username + '.zip';
 
     streamOfPosts.on('readable', function () {
@@ -137,7 +139,7 @@ function downloadMedia(username, res) {
         //    post.comment,
         //    " comment(s)"
         //].join(''));
-        console.log(post);
+        //console.log(post);
         //if (!fs.)
 // bigphoto: JSON.stringify(rawPost.images.low_resolution.url).replace('320x320', '1080x1080')
 //        var photoUrl = post.bigphoto.replace('"', '').replace('"', '').split('?')[0];
@@ -159,45 +161,49 @@ function downloadMedia(username, res) {
         output.on('close', function () {
             console.log(archive.pointer() + ' total bytes');
             console.log('archiver has been finalized and the output file descriptor has closed.');
+            var resMessage = 'hello';
 
-
-            var resMessage;
-
-            var stats = fs.statSync(pathToZip);
-            var fileSizeInBytes = stats["size"];
-            var fileSizeInMegabytes = fileSizeInBytes / 1000000.0;
-            logger.info(pathToZip + "mB:", fileSizeInMegabytes);
-
-            var fileStream = fs.createReadStream(pathToZip);
-            fileStream.on('error', function (err) {
-                resMessage = 'Error creating file stream.';
-                logger.error(resMessage, err);
-                res.json({error: 1, message: resMessage, data: null});
+            res.json({
+                error: 0,
+                message: resMessage,
+                data: {zipUrl: 'archives/' + username + '.zip'}
             });
-            fileStream.on('open', function () {
-                var s3bucket = new AWS.S3({params: {Bucket: 'instabackup2'}});
-                var params = {
-                    Key: username + '.zip',
-                    Body: fileStream,
-                    ACL: 'public-read',
-                    ContentType: 'application/octet-stream'
-                };
-                s3bucket.upload(params, function (err, data) {
-                    if (err) {
-                        resMessage = 'Error uploading data';
-                        logger.error(resMessage, err);
-                        res.json({error: 1, message: resMessage, data: null});
-                        return;
-                    }
-                    resMessage = 'Successfully uploaded data to myBucket/myKey.';
-                    logger.info(resMessage, data);
-                    res.json({
-                        error: 0,
-                        message: resMessage,
-                        data: {zipUrl: data.Location}
-                    });
-                });
-            });
+
+            //var stats = fs.statSync(pathToZip);
+            //var fileSizeInBytes = stats["size"];
+            //var fileSizeInMegabytes = fileSizeInBytes / 1000000.0;
+            //logger.info(pathToZip + "mB:", fileSizeInMegabytes);
+            //
+            //var fileStream = fs.createReadStream(pathToZip);
+            //fileStream.on('error', function (err) {
+            //    resMessage = 'Error creating file stream.';
+            //    logger.error(resMessage, err);
+            //    res.json({error: 1, message: resMessage, data: null});
+            //});
+            //fileStream.on('open', function () {
+            //    var s3bucket = new AWS.S3({params: {Bucket: 'instabackup2'}});
+            //    var params = {
+            //        Key: username + '.zip',
+            //        Body: fileStream,
+            //        ACL: 'public-read',
+            //        ContentType: 'application/octet-stream'
+            //    };
+            //    s3bucket.upload(params, function (err, data) {
+            //        if (err) {
+            //            resMessage = 'Error uploading data';
+            //            logger.error(resMessage, err);
+            //            res.json({error: 1, message: resMessage, data: null});
+            //            return;
+            //        }
+            //        resMessage = 'Successfully uploaded data to myBucket/myKey.';
+            //        logger.info(resMessage, data);
+            //        res.json({
+            //            error: 0,
+            //            message: resMessage,
+            //            data: {zipUrl: data.Location}
+            //        });
+            //    });
+            //});
         });
 
         archive.on('error', function (err) {

@@ -1,92 +1,53 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="backapitforme">
+<html lang="en" ng-app="backup-it-for-me-instagram">
 <head>
     <meta charset="UTF-8">
     <title>Backup your Instagram photos and videos instantly. Free of charge for
         small accounts.</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
-          crossorigin="anonymous">
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
     <!-- Optional theme -->
     <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
-          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
-          crossorigin="anonymous">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/angular.ng-notify/0.7.1/ng-notify.min.css">
 </head>
 <body>
-<form class="form-inline" id="formUsername">
-    <div class="form-group">
-        <label class="sr-only" for="usernameInput">Amount (in dollars)</label>
-        <div class="input-group">
-            <div class="input-group-addon">@</div>
-            <input type="text" class="form-control" id="usernameInput"
-                   placeholder="username">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#/">
+                backupitfor.me
+                <!--<img alt="Brand" src="ico/apple-icon-152x152.png">-->
+            </a>
+            <p class="navbar-text">Download your Instagram medias free of
+                charge!</p>
         </div>
+        <ul class="nav navbar-nav navbar-right">
+        </ul>
     </div>
-    <button type="button" class="btn btn-primary" id="instabackup_step1">
-
-        Next
-    </button>
-</form>
-
-
-<div id="userCard">
-    <div id="usernameCard"></div>
-    <div id="mediaCountCard"></div>
-    <button type="button" class="btn btn-primary" id="instabackup_step2">Prepare
-        Medias
-    </button>
+</nav>
+<div class='notifications top-right'></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div ng-view></div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
 </div>
 
-<div id="zipCard">
-    <div id="zipUrl"></div>
-</div>
-<!-- Latest compiled and minified JavaScript -->
 <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
-<script type="application/javascript">
-
-    $('#userCard').hide();
-
-    var username;
-    $("#instabackup_step1").click(function () {
-        $(this).prop('disabled', true);
-        $('#usernameInput').prop('disabled', true);
-        $("#instabackup_step1").html('<i class="fa fa-circle-o-notch fa-spin"></i>');
-        username = $('#usernameInput').val();
-        console.log('username: ', username);
-
-        $.get("/api/checkUsername/" + username, function (data) {
-//            $(".result").html(data);
-//            alert("Load was performed.");
-            console.log(data);
-            if (data.error === 0) {
-                $('#formUsername').hide();
-                $('#usernameCard').text(data.data.username);
-                $('#mediaCountCard').text(data.data.media.count);
-                $('#userCard').show();
-
-            }
-        });
-    });
-
-    $('#instabackup_step2').click(function () {
-        $.get("/api/downloadMedias/" + username, function (data) {
-            console.log(data);
-            $('#zipUrl').text(data.data.zipUrl);
-        });
-    });
-
-
-</script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.js"></script>
+<script src="https://cdn.jsdelivr.net/angular.ng-notify/0.7.1/ng-notify.min.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
 

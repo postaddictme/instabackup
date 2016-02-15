@@ -6,6 +6,7 @@ var app = express();
 var constants = require('./constants/constants');
 
 app.use(express.static('public'));
+app.use('/archives', express.static('account-medias/archive'));
 
 // create folder if does not exist
 fs.access(constants.FOLDER_ACCOUNT_MEDIAS, fs.R_OK | fs.W_OK, function (err) {
@@ -60,7 +61,7 @@ function createFolders() {
 }
 
 app.get('/api/checkUsername/:username', userController.checkUsername);
-app.get('/api/downloadMedias/:username', userController.downloadMedias);
+app.get('/api/prepareMedias/:username', userController.prepareMedias);
 
 app.listen(process.env.PORT, function () {
     console.log('Example app listening on port ' + process.env.PORT);

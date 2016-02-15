@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<div ng-controller="InstagramController" ng-init="loadCurrentInstagramAccount()"
+     align="center">
+    <img ng-src="{{currentInstagramAccount.profile_pic_url}}"/>
+    <div>{{currentInstagramAccount.username}}</div>
+    <div>Media count: {{currentInstagramAccount.media.count}}</div>
+    <button type="button" class="btn btn-primary" ng-click="prepareMedias()"
+            ng-disabled="isMediaPreparing"
+            ng-if="zipUrl == ''"
+    >
+        <i class="fa fa-circle-o-notch fa-spin"
+           ng-show="isMediaPreparing"></i>
+        Prepare Medias
+    </button>
+    <a target="_self" class="btn btn-success" href="{{zipUrl}}" download
+       ng-if="zipUrl !== ''">
+        Download medias of @{{currentInstagramAccount.username}}</a>
+</div>

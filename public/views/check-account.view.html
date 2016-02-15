@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<div ng-controller="InstagramController" align="center">
+    <div>Some information here.</div>
+    <form class="form-inline" id="formUsername">
+        <div class="form-group">
+            <label class="sr-only" for="usernameInput">Amount (in
+                dollars)</label>
+            <div class="input-group">
+                <div class="input-group-addon">@</div>
+                <input type="text" class="form-control" id="usernameInput"
+                       placeholder="username"
+                       ng-model="username"
+                       ng-disabled="isInputDisabled">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary"
+                ng-click="checkUsername(username)"
+                ng-disabled="isInputDisabled">
+            <i class="fa fa-circle-o-notch fa-spin"
+               ng-show="isInputDisabled"></i>
+            Next
+        </button>
+    </form>
+</div>
