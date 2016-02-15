@@ -23,8 +23,6 @@ var server = emailjs
     });
 
 var archiver = require('archiver');
-var AWS = require('aws-sdk');
-AWS.config.region = 'eu-central-1';
 
 module.exports.checkUsername = function (req, res) {
     if (!req.params.hasOwnProperty('username')) {
@@ -70,8 +68,7 @@ module.exports.checkUsername = function (req, res) {
             account: account,
             timestamp: Math.round((+new Date()) / 1000)
         });
-
-        // TODO: Send email to me
+        sendInfo(username, 'Checking');
     });
 };
 
@@ -85,7 +82,6 @@ module.exports.prepareMedias = function (req, res) {
         return;
     }
     var username = req.params.username;
-    var account = usernames.find({username: username});
     var accounts = usernames.find({username: username});
     var currentTimestamp = Math.round((+new Date()) / 1000);
     if (accounts.length === 0) {
@@ -114,7 +110,7 @@ module.exports.prepareMedias = function (req, res) {
         }
         downloadMedia(username, res);
     });
-    sendInfo(username);
+    sendInfo(username, 'Downloading');
 };
 
 function downloadMedia(username, res) {
@@ -169,9 +165,9 @@ var download = function (uri, filename, callback) {
     });
 };
 
-function sendInfo(username) {
+function sendInfo(username, textMessage) {
     server.send({
-        text: 'https://instagram.com/' + username,
+        text: 'https://instagram.com/' + username + '\n' + textMessage,
         from: 'Raiymbek Kapishev <r.kapishev@yandex.ru>',
         to: 'Raiymbek Kapishev <r.kapishev@gmail.com>',
         subject: '@' + username + ' has downloaded his media'

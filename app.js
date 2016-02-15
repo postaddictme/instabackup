@@ -7,7 +7,7 @@ var constants = require('./constants/constants');
 var timeout = require('connect-timeout');
 app.use(express.static('public'));
 app.use('/archives', express.static('account-medias/archive'));
-app.use(timeout('500s'));
+app.use(timeout('30s'));
 // create folder if does not exist
 fs.access(constants.FOLDER_ACCOUNT_MEDIAS, fs.R_OK | fs.W_OK, function (err) {
     if (err) {
@@ -63,6 +63,6 @@ function createFolders() {
 app.post('/api/checkUsername/:username', userController.checkUsername);
 app.post('/api/prepareMedias/:username', userController.prepareMedias);
 
-var server = app.listen(process.env.PORT, function () {
+app.listen(process.env.PORT, function () {
     console.log('Example app listening on port ' + process.env.PORT);
 });

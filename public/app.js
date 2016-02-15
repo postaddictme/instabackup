@@ -80,6 +80,12 @@ application
                 }, function (resp) {
                     console.log(resp.data);
                     $scope.isMediaPreparing = false;
+                    ngNotify.set('Connection timeout. For now you can prepare for download only 30 secs (~500 photos and videos)', {
+                        position: 'bottom',
+                        type: 'error',
+                        duration: 7000
+                    });
+
                 });
         }
 
