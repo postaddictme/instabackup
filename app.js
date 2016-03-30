@@ -7,7 +7,7 @@ var constants = require('./constants/constants');
 var timeout = require('connect-timeout');
 app.use(express.static('public'));
 app.use('/archives', express.static('account-medias/archive'));
-app.use(timeout('30s'));
+app.use(timeout('600s'));
 // create folder if does not exist
 fs.access(constants.FOLDER_ACCOUNT_MEDIAS, fs.R_OK | fs.W_OK, function (err) {
     if (err) {
