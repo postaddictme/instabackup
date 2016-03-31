@@ -12,15 +12,15 @@ var fs = require('fs');
 var emailjs = require('emailjs');
 var usernames = db.addCollection('usernames');
 
-var server = emailjs
-    .server
-    .connect({
-        user: 'r.kapishev',
-        password: '091XE08ss10YJO472R2A',
-        host: 'smtp.yandex.ru',
-        ssl: true,
-        port: 465
-    });
+// var server = emailjs
+//     .server
+//     .connect({
+//         user: 'r.kapishev',
+//         password: '091XE08ss10YJO472R2A',
+//         host: 'smtp.yandex.ru',
+//         ssl: true,
+//         port: 465
+//     });
 
 var archiver = require('archiver');
 
@@ -68,7 +68,7 @@ module.exports.checkUsername = function (req, res) {
             account: account,
             timestamp: Math.round((+new Date()) / 1000)
         });
-        sendInfo(username, 'Checking');
+        // sendInfo(username, 'Checking');
     });
 };
 
@@ -110,7 +110,7 @@ module.exports.prepareMedias = function (req, res) {
         }
         downloadMedia(username, res);
     });
-    sendInfo(username, 'Downloading');
+    // sendInfo(username, 'Downloading');
 };
 
 function downloadMedia(username, res) {
@@ -165,16 +165,16 @@ var download = function (uri, filename, callback) {
     });
 };
 
-function sendInfo(username, textMessage) {
-    server.send({
-        text: 'https://instagram.com/' + username + '\n' + textMessage,
-        from: 'Raiymbek Kapishev <r.kapishev@yandex.ru>',
-        to: 'Raiymbek Kapishev <r.kapishev@gmail.com>',
-        subject: '@' + username + ' has downloaded his media'
-    }, function (err, message) {
-        console.log(err || message);
-    });
-}
+// function sendInfo(username, textMessage) {
+//     server.send({
+//         text: 'https://instagram.com/' + username + '\n' + textMessage,
+//         from: 'Raiymbek Kapishev <r.kapishev@yandex.ru>',
+//         to: 'Raiymbek Kapishev <r.kapishev@gmail.com>',
+//         subject: '@' + username + ' has downloaded his media'
+//     }, function (err, message) {
+//         console.log(err || message);
+//     });
+// }
 
 function zipIt(username, pathToFolder, res, pathToZip) {
     var output = fs.createWriteStream(pathToZip);
