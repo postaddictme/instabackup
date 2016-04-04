@@ -9,7 +9,6 @@ var db = new loki('loki.json');
 
 var InstagramPosts = require('instagram-screen-scrape');
 var fs = require('fs');
-var emailjs = require('emailjs');
 var usernames = db.addCollection('usernames');
 
 var archiver = require('archiver');
