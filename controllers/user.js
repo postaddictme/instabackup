@@ -125,7 +125,7 @@ function downloadMedia(username, res) {
                     zipIt(username, pathToFolder, res, pathToZip);
                 }
             });
-        } else {
+        } else if (post.image) {
             download(post.image, pathToFolder + '/' + post.time + '.jpg', function () {
                 index++;
                 logger.debug('Photo downloaded:', index);
@@ -135,6 +135,8 @@ function downloadMedia(username, res) {
                     zipIt(username, pathToFolder, res, pathToZip);
                 }
             });
+        } else {
+            logger.warn("Nor image nor video");
         }
     });
     streamOfPosts.on('end', function () {

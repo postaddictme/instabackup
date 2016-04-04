@@ -2,11 +2,10 @@ var express = require('express');
 var fs = require('fs');
 var userController = require('./controllers/user');
 var app = express();
-var constants = require('./constants/constants');
-var timeout = require('connect-timeout');
+
 app.use(express.static('public'));
 app.use('/archives', express.static('account-medias/archive'));
-app.use(timeout(constants.REQUEST_TIMEOUT, {}));
+
 app.post('/api/checkUsername/:username', userController.checkUsername);
 app.post('/api/prepareMedias/:username', userController.prepareMedias);
 
