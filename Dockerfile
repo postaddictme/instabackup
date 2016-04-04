@@ -9,4 +9,4 @@ COPY . /src
 RUN cd /src; npm install
 RUN export PORT=8080
 EXPOSE 8080
-CMD cd /src && node ./app.js
+CMD cd /src && nodejs ./app.js
