@@ -14,3 +14,5 @@ app.post('/api/prepareMedias/:username', userController.prepareMedias);
 app.listen(process.env.PORT | 8080, function () {
     console.log('Example app listening on port ' + process.env.PORT);
 });
+
+module.exports.getApp = app;
