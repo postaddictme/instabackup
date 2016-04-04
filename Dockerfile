@@ -1,8 +1,8 @@
 FROM ubuntu:latest
 MAINTAINER r.kapishev@gmail.com
-RUN curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-RUN apt-get install -y curl
 #RUN apt-get -y update
+RUN apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
 RUN apt-get install -y nodejs
 RUN apt-get install -y build-essential
 RUN apt-get install -y npm
