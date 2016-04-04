@@ -11,6 +11,6 @@ app.use(timeout('600s'));
 app.post('/api/checkUsername/:username', userController.checkUsername);
 app.post('/api/prepareMedias/:username', userController.prepareMedias);
 
-app.listen(process.env.PORT, function () {
+app.listen(process.env.PORT | 8080, function () {
     console.log('Example app listening on port ' + process.env.PORT);
 });
