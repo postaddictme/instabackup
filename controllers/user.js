@@ -7,7 +7,7 @@ var loki = require('lokijs');
 var constants = require('../constants/constants');
 var db = new loki('loki.json');
 
-var InstagramPosts = require('instagram-screen-scrape');
+var InstagramPosts = require('instagram-screen-scrape').InstagramPosts;
 var fs = require('fs');
 var usernames = db.addCollection('usernames');
 
@@ -115,8 +115,8 @@ function downloadMedia(username, res) {
         }
         // bigphoto: JSON.stringify(rawPost.images.low_resolution.url).replace('320x320', '1080x1080')
         //        var photoUrl = post.bigphoto.replace('"', '').replace('"', '').split('?')[0];
-        if (post.video) {
-            download(post.video, pathToFolder + '/' + post.time + '.mp4', function () {
+        if (post.type === 'video') {
+            download(post.media, pathToFolder + '/' + post.time + '.mp4', function () {
                 index++;
                 logger.debug('Video downloaded:', index);
                 var accounts = usernames.find({username: username});
@@ -125,8 +125,8 @@ function downloadMedia(username, res) {
                     zipIt(username, pathToFolder, res, pathToZip);
                 }
             });
-        } else if (post.image) {
-            download(post.image, pathToFolder + '/' + post.time + '.jpg', function () {
+        } else if (post.type === 'image') {
+            download(post.media, pathToFolder + '/' + post.time + '.jpg', function () {
                 index++;
                 logger.debug('Photo downloaded:', index);
                 var accounts = usernames.find({username: username});
@@ -136,7 +136,7 @@ function downloadMedia(username, res) {
                 }
             });
         } else {
-            logger.warn("Nor image nor video");
+            logger.warn("Nor image nor video", post);
         }
     });
     streamOfPosts.on('end', function () {
