@@ -36,7 +36,9 @@ application
 
         $scope.loadCurrentInstagramAccount = function () {
             $scope.currentInstagramAccount = userService.getCurrentInstagramAccount();
-            if ($scope.currentInstagramAccount == 'undefined' || typeof $scope.currentInstagramAccount =='undefined' || $scope.currentInstagramAccount == null) {
+            if ($scope.currentInstagramAccount == 'undefined'
+                || typeof $scope.currentInstagramAccount == 'undefined'
+                || $scope.currentInstagramAccount == null) {
                 $window.location.href = '#/check-username'
             }
         };
@@ -75,12 +77,12 @@ application
             $http.post('api/prepareMedias/' + $scope.currentInstagramAccount.username)
                 .then(function (resp) {
                     console.log(resp.data);
-                    $scope.zipUrl = resp.data.data.zipUrl
+                    $scope.zipUrl = resp.data.data.zipUrl;
                     $scope.isMediaPreparing = false;
                 }, function (resp) {
                     console.log(resp.data);
                     $scope.isMediaPreparing = false;
-                    ngNotify.set('Connection timeout. For now you can prepare for download only 30 secs (~500 photos and videos)', {
+                    ngNotify.set('Connection timeout. =(', {
                         position: 'bottom',
                         type: 'error',
                         duration: 7000
