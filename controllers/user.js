@@ -36,10 +36,10 @@ module.exports.checkUsername = function (req, res) {
             });
             return;
         }
-        if (body.indexOf('"is_private":true') !== -1) {
+        if (body.indexOf('"is_private": true') !== -1) {
             res.json({
                 error: 1,
-                message: 'Account is private.',
+                message: 'Account is private. Service works only with public accounts',
                 data: null
             });
             return;
