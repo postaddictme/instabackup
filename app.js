@@ -9,7 +9,7 @@ app.use('/archives', express.static('account-medias/archive'));
 app.post('/api/checkUsername/:username', userController.checkUsername);
 app.post('/api/prepareMedias/:username', userController.prepareMedias);
 
-app.listen(process.env.PORT | 8978, function () {
+app.listen(process.env.PORT | 8080, function () {
     console.log('Example app listening on port ' + (process.env.PORT | 8080));
 });
 
